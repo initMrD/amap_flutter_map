@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart' show Color;
 import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:meta/meta.dart';
 import 'base_overlay.dart';
 import 'polyline.dart';
 
@@ -13,15 +12,14 @@ import 'polyline.dart';
 class Polygon extends BaseOverlay {
   /// 默认构造函数
   Polygon(
-      {@required this.points,
+      {required this.points,
       double strokeWidth = 10,
       this.strokeColor = const Color(0xCC00BFFF),
       this.fillColor = const Color(0xC487CEFA),
       this.visible = true,
       this.joinType = JoinType.bevel})
-      : assert(points != null && points.length > 0),
-        this.strokeWidth =
-            strokeWidth == null ? 10 : (strokeWidth <= 0 ? 10 : strokeWidth),
+      : assert(points.length > 0),
+        this.strokeWidth = (strokeWidth <= 0 ? 10 : strokeWidth),
         super();
 
   /// 覆盖物的坐标点数组,不能为空
@@ -44,11 +42,11 @@ class Polygon extends BaseOverlay {
 
   /// 实际copy函数
   Polygon copyWith({
-    List<LatLng> pointsParam,
-    double strokeWidthParam,
-    Color strokeColorParam,
-    Color fillColorParam,
-    bool visibleParam,
+    List<LatLng>? pointsParam,
+    double? strokeWidthParam,
+    Color? strokeColorParam,
+    Color? fillColorParam,
+    bool? visibleParam,
   }) {
     Polygon copyPolyline = Polygon(
       points: pointsParam ?? points,
@@ -76,12 +74,10 @@ class Polygon extends BaseOverlay {
     }
 
     addIfPresent('id', id);
-    if (points != null) {
-      json['points'] = _pointsToJson();
-    }
+    json['points'] = _pointsToJson();
     addIfPresent('strokeWidth', strokeWidth);
-    addIfPresent('strokeColor', strokeColor?.value);
-    addIfPresent('fillColor', fillColor?.value);
+    addIfPresent('strokeColor', strokeColor.value);
+    addIfPresent('fillColor', fillColor.value);
     addIfPresent('visible', visible);
     addIfPresent('joinType', joinType.index);
     return json;
@@ -91,6 +87,7 @@ class Polygon extends BaseOverlay {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if (other is !Polygon) return false;
     final Polygon typedOther = other;
     return id == typedOther.id &&
         listEquals(points, typedOther.points) &&
@@ -114,6 +111,7 @@ class Polygon extends BaseOverlay {
 }
 
 Map<String, Polygon> keyByPolygonId(Iterable<Polygon> polylines) {
+  // ignore: unnecessary_null_comparison
   if (polylines == null) {
     return <String, Polygon>{};
   }

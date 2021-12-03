@@ -6,7 +6,6 @@ import 'package:amap_flutter_map/src/types/bitmap.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart' show Color;
 import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:meta/meta.dart';
 import 'base_overlay.dart';
 
 /// 虚线类型
@@ -52,7 +51,7 @@ enum JoinType {
 class Polyline extends BaseOverlay {
   /// 默认构造函数
   Polyline({
-    @required this.points,
+    required this.points,
     double width = 10,
     this.visible = true,
     this.geodesic = false,
@@ -63,10 +62,9 @@ class Polyline extends BaseOverlay {
     this.customTexture,
     this.onTap,
     this.color = const Color(0xCCC4E0F0),
-  })  : assert(points != null && points.length > 0),
-        this.width = width == null ? 10 : (width <= 0 ? 10 : width),
-        this.alpha =
-        (alpha != null ? (alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha)) : alpha),
+  })  : assert(points.length > 0),
+        this.width = (width <= 0 ? 10 : width),
+        this.alpha =(alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha)),
         super();
 
   /// 覆盖物的坐标点数组,points不能为空
@@ -85,7 +83,7 @@ class Polyline extends BaseOverlay {
   final Color color;
 
   /// 自定义纹理图片,注意: 如果设置了自定义纹理图片，则color的设置将无效;
-  final BitmapDescriptor customTexture;
+  final BitmapDescriptor? customTexture;
 
   /// 是否为大地曲线
   final bool geodesic;
@@ -100,21 +98,21 @@ class Polyline extends BaseOverlay {
   final CapType capType;
 
   /// 点击回调（回调参数为id)
-  final ArgumentCallback<String> onTap;
+  final ArgumentCallback<String>? onTap;
 
   /// 实际copy函数
   Polyline copyWith({
-    List<LatLng> pointsParam,
-    double widthParam,
-    int zIndexParam,
-    bool visibleParam,
-    double alphaParam,
-    DashLineType dashLineTypeParam,
-    CapType capTypeParam,
-    JoinType joinTypeParam,
-    BitmapDescriptor customTextureParam,
-    ArgumentCallback<String> onTapParam,
-    Color colorParam,
+    List<LatLng>? pointsParam,
+    double? widthParam,
+    int? zIndexParam,
+    bool? visibleParam,
+    double? alphaParam,
+    DashLineType? dashLineTypeParam,
+    CapType? capTypeParam,
+    JoinType? joinTypeParam,
+    BitmapDescriptor? customTextureParam,
+    ArgumentCallback<String>? onTapParam,
+    Color? colorParam,
   }) {
     Polyline copyPolyline = Polyline(
       points: pointsParam ?? points,
@@ -147,9 +145,7 @@ class Polyline extends BaseOverlay {
     }
 
     addIfPresent('id', id);
-    if (points != null) {
-      json['points'] = _pointsToJson();
-    }
+    json['points'] = _pointsToJson();
     addIfPresent('width', width);
     addIfPresent('visible', visible);
     addIfPresent('geodesic', geodesic);
@@ -157,9 +153,7 @@ class Polyline extends BaseOverlay {
     addIfPresent('dashLineType', dashLineType.index);
     addIfPresent('capType', capType.index);
     addIfPresent('joinType', joinType.index);
-    if (customTexture != null) {
-      addIfPresent('customTexture', customTexture.toMap());
-    }
+    addIfPresent('customTexture', customTexture?.toMap());
     addIfPresent('color', color.value);
     return json;
   }
@@ -168,6 +162,7 @@ class Polyline extends BaseOverlay {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if (other is !Polyline) return false;
     final Polyline typedOther = other;
     return id == typedOther.id &&
         listEquals(points, typedOther.points) &&
@@ -194,6 +189,7 @@ class Polyline extends BaseOverlay {
 }
 
 Map<String, Polyline> keyByPolylineId(Iterable<Polyline> polylines) {
+  // ignore: unnecessary_null_comparison
   if (polylines == null) {
     return <String, Polyline>{};
   }

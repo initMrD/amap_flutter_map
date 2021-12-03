@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AMapNaviKit/MAMapKit.h>
+#import <MAMapKit/MAMapKit.h>
 #import <AMapSearchKit/AMapSearchKit.h>
 
 @interface BaseMapViewController : UIViewController<MAMapViewDelegate, AMapSearchDelegate>

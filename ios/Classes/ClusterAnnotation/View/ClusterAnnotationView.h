@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AMapNaviKit/MAMapKit.h>
+#import <MAMapKit/MAMapKit.h>
 
 
 @interface ClusterAnnotationView : MAAnnotationView

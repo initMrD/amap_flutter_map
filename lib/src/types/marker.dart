@@ -4,9 +4,7 @@
 
 import 'dart:ui' show hashValues, Offset;
 import 'package:amap_flutter_map/src/types/base_overlay.dart';
-import 'package:flutter/foundation.dart' show ValueChanged, VoidCallback;
 import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:meta/meta.dart';
 import 'bitmap.dart';
 import 'base_overlay.dart';
 
@@ -18,22 +16,25 @@ typedef void MarkerDragEndCallback(String id, LatLng endPosition);
 ///Android和iOS的实现机制有差异，仅在接口层面拉齐，效果一致
 class InfoWindow {
   /// 为 [Marker] 产生一个不可修改的文本气泡.
-  const InfoWindow({this.title, this.snippet});
+  const InfoWindow({
+    this.title,
+    this.snippet,
+  });
 
   /// 无文本的气泡
   static const InfoWindow noText = InfoWindow();
 
   /// 气泡的title
-  final String title;
+  final String? title;
 
   /// 气泡的详细信息
-  final String snippet;
+  final String? snippet;
 
   /// 气泡copy方法
   ///
   InfoWindow copyWith({
-    String titleParam,
-    String snippetParam,
+    String? titleParam,
+    String? snippetParam,
   }) {
     return InfoWindow(
       title: titleParam ?? title,
@@ -59,6 +60,9 @@ class InfoWindow {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if (other is !InfoWindow) {
+      return false;
+    }
     final InfoWindow typedOther = other;
     return title == typedOther.title && snippet == typedOther.snippet;
   }
@@ -72,11 +76,10 @@ class InfoWindow {
   }
 }
 
-
 /// 点覆盖物的类
 class Marker extends BaseOverlay {
   Marker({
-    @required this.position,
+    required this.position,
     double alpha = 1.0,
     Offset anchor = const Offset(0.5, 1.0),
     this.clickable = true,
@@ -89,9 +92,10 @@ class Marker extends BaseOverlay {
     this.zIndex = 0.0,
     this.onTap,
     this.onDragEnd,
-  })  : assert(position != null),
-        this.alpha =
+  })  : this.alpha =
+            // ignore: unnecessary_null_comparison
             (alpha != null ? (alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha)) : alpha),
+        // ignore: unnecessary_null_comparison
         this.anchor = (anchor == null
             ? Offset(0.5, 1.0)
             : ((anchor.dx < 0 ||
@@ -140,25 +144,25 @@ class Marker extends BaseOverlay {
   final double zIndex;
 
   /// 回调的参数是对应的id
-  final ArgumentCallback<String> onTap;
+  final ArgumentCallback<String>? onTap;
 
   /// Marker被拖拽结束的回调
-  final MarkerDragEndCallback onDragEnd;
+  final MarkerDragEndCallback? onDragEnd;
 
   /// copy的真正复制的参数，主要用于需要修改某个属性参数时使用
   Marker copyWith({
-    double alphaParam,
-    Offset anchorParam,
-    bool clickableParam,
-    bool draggableParam,
-    BitmapDescriptor iconParam,
-    bool infoWindowEnableParam,
-    InfoWindow infoWindowParam,
-    LatLng positionParam,
-    double rotationParam,
-    bool visibleParam,
-    VoidCallback onTapParam,
-    ValueChanged<LatLng> onDragEndParam,
+    double? alphaParam,
+    Offset? anchorParam,
+    bool? clickableParam,
+    bool? draggableParam,
+    BitmapDescriptor? iconParam,
+    bool? infoWindowEnableParam,
+    InfoWindow? infoWindowParam,
+    LatLng? positionParam,
+    double? rotationParam,
+    bool? visibleParam,
+    ArgumentCallback<String?> ? onTapParam,
+    MarkerDragEndCallback? onDragEndParam,
   }) {
     Marker copyMark = Marker(
       alpha: alphaParam ?? alpha,
@@ -196,10 +200,10 @@ class Marker extends BaseOverlay {
     addIfPresent('anchor', _offsetToJson(anchor));
     addIfPresent('clickable', clickable);
     addIfPresent('draggable', draggable);
-    addIfPresent('icon', icon?.toMap());
+    addIfPresent('icon', icon.toMap());
     addIfPresent('infoWindowEnable', infoWindowEnable);
-    addIfPresent('infoWindow', infoWindow?._toMap());
-    addIfPresent('position', position?.toJson());
+    addIfPresent('infoWindow', infoWindow._toMap());
+    addIfPresent('position', position.toJson());
     addIfPresent('rotation', rotation);
     addIfPresent('visible', visible);
     addIfPresent('zIndex', zIndex);
@@ -207,9 +211,6 @@ class Marker extends BaseOverlay {
   }
 
   dynamic _offsetToJson(Offset offset) {
-    if (offset == null) {
-      return null;
-    }
     return <dynamic>[offset.dx, offset.dy];
   }
 
@@ -217,6 +218,7 @@ class Marker extends BaseOverlay {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if(other is !Marker) return false;
     final Marker typedOther = other;
     return id == typedOther.id &&
         alpha == typedOther.alpha &&
@@ -245,9 +247,6 @@ class Marker extends BaseOverlay {
 }
 
 Map<String, Marker> keyByMarkerId(Iterable<Marker> markers) {
-  if (markers == null) {
-    return <String, Marker>{};
-  }
   return Map<String, Marker>.fromEntries(markers.map(
       (Marker marker) => MapEntry<String, Marker>(marker.id, marker.clone())));
 }

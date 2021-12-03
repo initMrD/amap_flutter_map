@@ -62,7 +62,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
   ///是否支持倾斜手势
   bool _tiltGesturesEnabled = true;
 
-  AMapController _controller;
+  late AMapController _controller;
 
   CustomStyleOptions _customStyleOptions = CustomStyleOptions(false);
 
@@ -76,9 +76,6 @@ class _MapUiBodyState extends State<_MapUiBody> {
   }
 
   void _loadCustomData() async {
-    if (null == _customStyleOptions) {
-      _customStyleOptions = CustomStyleOptions(false);
-    }
     ByteData styleByteData = await rootBundle.load('assets/style.data');
     _customStyleOptions.styleData = styleByteData.buffer.asUint8List();
     ByteData styleExtraByteData =
@@ -90,6 +87,8 @@ class _MapUiBodyState extends State<_MapUiBody> {
   @override
   Widget build(BuildContext context) {
     final AMapWidget map = AMapWidget(
+      ///必须正确设置的合规隐私声明，否则SDK不会工作，会造成地图白屏等问题。
+      privacyStatement: ConstConfig.amapPrivacyStatement,
       apiKey: ConstConfig.amapApiKeys,
       initialCameraPosition: _kInitialPosition,
       mapType: _mapType,
@@ -124,7 +123,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
             groupValue: _mapType,
             onChanged: (value) {
               setState(() {
-                _mapType = value;
+                _mapType = value as MapType;
               });
             },
           ),
@@ -328,7 +327,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
           _myLocationStyleContainer(),
           _uiOptionsWidget(),
           _gesturesOptiosWeidget(),
-          FlatButton(
+          TextButton(
             child: const Text('moveCamera到首开'),
             onPressed: _moveCameraToShoukai,
           ),
@@ -369,9 +368,9 @@ class _MapUiBodyState extends State<_MapUiBody> {
 
   void printApprovalNumber() async {
     String mapContentApprovalNumber =
-        await _controller?.getMapContentApprovalNumber();
+        (await _controller.getMapContentApprovalNumber())!;
     String satelliteImageApprovalNumber =
-        await _controller?.getSatelliteImageApprovalNumber();
+        (await _controller.getSatelliteImageApprovalNumber())!;
     print('地图审图号（普通地图）: $mapContentApprovalNumber');
     print('地图审图号（卫星地图): $satelliteImageApprovalNumber');
   }
@@ -402,44 +401,26 @@ class _MapUiBodyState extends State<_MapUiBody> {
   }
 
   void _onLocationChanged(AMapLocation location) {
-    if (null == location) {
-      return;
-    }
     print('_onLocationChanged ${location.toJson()}');
   }
 
   void _onCameraMove(CameraPosition cameraPosition) {
-    if (null == cameraPosition) {
-      return;
-    }
     print('onCameraMove===> ${cameraPosition.toMap()}');
   }
 
   void _onCameraMoveEnd(CameraPosition cameraPosition) {
-    if (null == cameraPosition) {
-      return;
-    }
     print('_onCameraMoveEnd===> ${cameraPosition.toMap()}');
   }
 
   void _onMapTap(LatLng latLng) {
-    if (null == latLng) {
-      return;
-    }
     print('_onMapTap===> ${latLng.toJson()}');
   }
 
   void _onMapLongPress(LatLng latLng) {
-    if (null == latLng) {
-      return;
-    }
     print('_onMapLongPress===> ${latLng.toJson()}');
   }
 
   void _onMapPoiTouched(AMapPoi poi) {
-    if (null == poi) {
-      return;
-    }
     print('_onMapPoiTouched===> ${poi.toJson()}');
   }
 }

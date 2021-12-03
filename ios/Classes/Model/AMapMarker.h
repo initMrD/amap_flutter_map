@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import <AMapNaviKit/MAMapKit.h>
+#import <MAMapKit/MAMapKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

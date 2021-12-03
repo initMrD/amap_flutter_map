@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// “amap_flutter_map”平台特定实现必须扩展的接口
@@ -29,7 +28,7 @@ abstract class AMapFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('init() has not been implemented.');
   }
 
-  void dispose({@required int id}) {
+  void dispose({required int id}) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
 

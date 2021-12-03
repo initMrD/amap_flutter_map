@@ -32,8 +32,8 @@ class _State extends State<_Body> {
   static final LatLng mapCenter = const LatLng(39.909187, 116.397451);
 
   Map<String, Marker> _markers = <String, Marker>{};
-  BitmapDescriptor _markerIcon;
-  String selectedMarkerId;
+  BitmapDescriptor? _markerIcon;
+  String? selectedMarkerId;
 
   void _onMapCreated(AMapController controller) {}
 
@@ -57,7 +57,7 @@ class _State extends State<_Body> {
         .resolve(config)
         .addListener(ImageStreamListener((ImageInfo image, bool sync) async {
       final ByteData bytes =
-          await image.image.toByteData(format: ImageByteFormat.png);
+          (await image.image.toByteData(format: ImageByteFormat.png))!;
       final BitmapDescriptor bitmap =
           BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
       bitmapIcon.complete(bitmap);
@@ -79,7 +79,7 @@ class _State extends State<_Body> {
         mapCenter.longitude + cos(markerCount * pi / 12.0) / 20.0);
     final Marker marker = Marker(
       position: markPostion,
-      icon: _markerIcon,
+      icon: _markerIcon!,
       infoWindow: InfoWindow(title: '第 $markerCount 个Marker'),
       onTap: (markerId) => _onMarkerTapped(markerId),
       onDragEnd: (markerId, endPosition) =>
@@ -92,8 +92,8 @@ class _State extends State<_Body> {
   }
 
   void _onMarkerTapped(String markerId) {
-    final Marker tappedMarker = _markers[markerId];
-    final String title = tappedMarker.infoWindow.title;
+    final Marker? tappedMarker = _markers[markerId];
+    final String? title = tappedMarker!.infoWindow.title;
     print('$title 被点击了,markerId: $markerId');
     setState(() {
       selectedMarkerId = markerId;
@@ -101,13 +101,13 @@ class _State extends State<_Body> {
   }
 
   void _onMarkerDragEnd(String markerId, LatLng position) {
-    final Marker tappedMarker = _markers[markerId];
-    final String title = tappedMarker.infoWindow.title;
+    final Marker? tappedMarker = _markers[markerId];
+    final String? title = tappedMarker!.infoWindow.title;
     print('$title markerId: $markerId 被拖拽到了: $position');
   }
 
   void _remove() {
-    final Marker selectedMarker = _markers[selectedMarkerId];
+    final Marker? selectedMarker = _markers[selectedMarkerId];
     //有选中的Marker
     if (selectedMarker != null) {
       setState(() {
@@ -122,28 +122,28 @@ class _State extends State<_Body> {
     if (_markers.length > 0) {
       setState(() {
         _markers.clear();
-        selectedMarkerId = null;
+        selectedMarkerId = null.toString();
       });
     }
   }
 
   void _changeInfo() async {
-    final Marker marker = _markers[selectedMarkerId];
-    final String newTitle = marker.infoWindow.title + '*';
-    setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
-        infoWindowParam: marker.infoWindow.copyWith(
-          titleParam: newTitle,
-        ),
-      );
-    });
+    final Marker marker = _markers[selectedMarkerId]!;
+    final String newTitle = marker.infoWindow.title! + '*';
+    if(selectedMarkerId != null) {
+      setState(() {
+        _markers[selectedMarkerId!] = marker.copyWith(
+          infoWindowParam: marker.infoWindow.copyWith(
+            titleParam: newTitle,
+          ),
+
+        );
+      });
+    }
   }
 
   void _changeAnchor() {
-    final Marker marker = _markers[selectedMarkerId];
-    if (marker == null) {
-      return;
-    }
+    final Marker marker = _markers[selectedMarkerId]!;
     final Offset currentAnchor = marker.anchor;
     double dx = 0;
     double dy = 0;
@@ -159,21 +159,21 @@ class _State extends State<_Body> {
     }
     final Offset newAnchor = Offset(dx, dy);
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         anchorParam: newAnchor,
       );
     });
   }
 
   void _changePosition() {
-    final Marker marker = _markers[selectedMarkerId];
+    final Marker marker = _markers[selectedMarkerId]!;
     final LatLng current = marker.position;
     final Offset offset = Offset(
       mapCenter.latitude - current.latitude,
       mapCenter.longitude - current.longitude,
     );
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         positionParam: LatLng(
           mapCenter.latitude + offset.dy,
           mapCenter.longitude + offset.dx,
@@ -183,38 +183,38 @@ class _State extends State<_Body> {
   }
 
   Future<void> _changeAlpha() async {
-    final Marker marker = _markers[selectedMarkerId];
+    final Marker marker = _markers[selectedMarkerId]!;
     final double current = marker.alpha;
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         alphaParam: current < 0.1 ? 1.0 : current * 0.75,
       );
     });
   }
 
   Future<void> _changeRotation() async {
-    final Marker marker = _markers[selectedMarkerId];
+    final Marker marker = _markers[selectedMarkerId]!;
     final double current = marker.rotation;
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         rotationParam: current == 330.0 ? 0.0 : current + 30.0,
       );
     });
   }
 
   Future<void> _toggleVisible(value) async {
-    final Marker marker = _markers[selectedMarkerId];
+    final Marker marker = _markers[selectedMarkerId]!;
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         visibleParam: value,
       );
     });
   }
 
   Future<void> _toggleDraggable(value) async {
-    final Marker marker = _markers[selectedMarkerId];
+    final Marker marker = _markers[selectedMarkerId]!;
     setState(() {
-      _markers[selectedMarkerId] = marker.copyWith(
+      _markers[selectedMarkerId!] = marker.copyWith(
         draggableParam: value,
       );
     });
@@ -269,27 +269,27 @@ class _State extends State<_Body> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('添加'),
                             onPressed: _add,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('移除'),
                             onPressed:
                                 (selectedMarkerId == null) ? null : _remove,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('更新InfoWidow'),
                             onPressed:
                                 (selectedMarkerId == null) ? null : _changeInfo,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改锚点'),
                             onPressed: (selectedMarkerId == null)
                                 ? null
                                 : _changeAnchor,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改透明度'),
                             onPressed: (selectedMarkerId == null)
                                 ? null
@@ -299,7 +299,7 @@ class _State extends State<_Body> {
                       ),
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('全部移除'),
                             onPressed: _markers.length > 0 ? _removeAll : null,
                           ),
@@ -317,13 +317,13 @@ class _State extends State<_Body> {
                                 : _toggleVisible,
                             defaultValue: true,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改坐标'),
                             onPressed: (selectedMarkerId == null)
                                 ? null
                                 : _changePosition,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改旋转角度'),
                             onPressed: (selectedMarkerId == null)
                                 ? null

@@ -11,7 +11,7 @@ class MinMaxZoomDemoPage extends BasePage {
 }
 
 class _Body extends StatefulWidget {
-  _Body({Key key}) : super(key: key);
+  _Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -20,8 +20,8 @@ class _Body extends StatefulWidget {
 class _BodyState extends State<_Body> {
   final double _minZoom = 10;
   final double _maxZoom = 15;
-  String _currentZoom;
-  AMapController _mapController;
+  String? _currentZoom;
+  late AMapController _mapController;
   @override
   Widget build(BuildContext context) {
     final AMapWidget amap = AMapWidget(
@@ -64,7 +64,7 @@ class _BodyState extends State<_Body> {
                         padding: EdgeInsets.all(5),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          _currentZoom,
+                          _currentZoom!,
                           style: TextStyle(color: Colors.white),
                         ))
                     : SizedBox(),
@@ -125,7 +125,7 @@ class _BodyState extends State<_Body> {
 
   //级别加1
   void _zoomIn() {
-    _mapController?.moveCamera(
+    _mapController.moveCamera(
       CameraUpdate.zoomIn(),
       animated: true,
     );
@@ -133,7 +133,7 @@ class _BodyState extends State<_Body> {
 
   //级别减1
   void _zoomOut() {
-    _mapController?.moveCamera(
+    _mapController.moveCamera(
       CameraUpdate.zoomOut(),
       animated: true,
     );

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AMapNaviKit/MAMapKit.h>
+#import <MAMapKit/MAMapKit.h>
 #import <AMapSearchKit/AMapCommonObj.h>
 
 @interface ClusterAnnotation : NSObject<MAAnnotation>

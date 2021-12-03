@@ -38,6 +38,10 @@ class AMapPlatformViewFactory extends PlatformViewFactory {
             ConvertUtil.density = context.getResources().getDisplayMetrics().density;
             params = (Map<String, Object>) args;
             LogUtil.i(CLASS_NAME,"create params==>" + params);
+            if (params.containsKey("privacyStatement")) {
+                ConvertUtil.setPrivacyStatement(context, params.get("privacyStatement"));
+            }
+
             Object options = ((Map<String, Object>) args).get("options");
             if(null != options) {
                 ConvertUtil.interpretAMapOptions(options, builder);
@@ -67,6 +71,11 @@ class AMapPlatformViewFactory extends PlatformViewFactory {
             if (params.containsKey("apiKey")) {
                 ConvertUtil.checkApiKey(params.get("apiKey"));
             }
+
+            if (params.containsKey("debugMode")) {
+                LogUtil.isDebugMode = ConvertUtil.toBoolean(params.get("debugMode"));
+            }
+
         } catch (Throwable e) {
             LogUtil.e(CLASS_NAME, "create", e);
         }

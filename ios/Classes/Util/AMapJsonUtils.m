@@ -189,7 +189,7 @@
                 [ret setValue:value forKey:propertyName];
 #ifdef DEBUG
                 Class valueClaz = [value class];
-               // NSLog(@"\U0001F913\U0001F913 Warning1: property '%@' of %@ is %@, %@ is received", propertyName, modelClass, propertyClass, valueClaz);
+                NSLog(@"\U0001F913\U0001F913 Warning1: property '%@' of %@ is %@, %@ is received", propertyName, modelClass, propertyClass, valueClaz);
 #endif
             }
         } else { //end of if(propertyClaz) 如@"Ti" @"Tf"
@@ -198,7 +198,7 @@
             } else {
 #ifdef DEBUG
                 Class valueClaz = [value class];
-               // NSLog(@"\U0001F913\U0001F913 Warning1: property '%@' of %@ is %@, %@ is received", propertyName, modelClass, propertyClass, valueClaz);
+                NSLog(@"\U0001F913\U0001F913 Warning1: property '%@' of %@ is %@, %@ is received", propertyName, modelClass, propertyClass, valueClaz);
 #endif
             }
         }
@@ -206,7 +206,7 @@
     
 #ifdef DEBUG
     if([missedProperties count] > 0) {
-        // NSLog(@"\U0001F913\U0001F913 Warning2: %@ value missed: %@", modelClass, missedProperties);
+        NSLog(@"\U0001F913\U0001F913 Warning2: %@ value missed: %@", modelClass, missedProperties);
     }
 #endif
     
@@ -270,37 +270,6 @@
         }
     }
     return location;
-}
-
-+ (NSString *)jsonToString:(id)theData{
-    NSString * jsonString = @"";
-    if (theData != nil) {
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:theData
-                                                           options:NSJSONWritingPrettyPrinted
-                                                             error:nil];
- 
-        if ([jsonData length] != 0){
-            jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        }
-    }
-    return jsonString;
-}
-+ (id)stringToJson:(NSString *)string
-{
-    if (string == nil) {
-        return nil;
-    }
-    
-    NSData *jsonData = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *err;
-    id dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                        options:NSJSONReadingMutableContainers
-                                                          error:&err];
-    if(err)
-    {
-        return nil;
-    }
-    return dic;
 }
 
 @end

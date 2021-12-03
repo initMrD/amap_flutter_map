@@ -19,8 +19,8 @@ class _SnapShotBody extends StatefulWidget {
 }
 
 class _SnapShotState extends State<_SnapShotBody> {
-  AMapController _mapController;
-  Uint8List _imageBytes;
+  AMapController? _mapController;
+  Uint8List? _imageBytes;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,14 +40,24 @@ class _SnapShotState extends State<_SnapShotBody> {
             child: SizedBox(
               height: 40,
               width: 100,
-              child: FlatButton(
+              child: TextButton(
                 child: Text('截屏'),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                  //文字颜色
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  //水波纹颜色
+                  overlayColor: MaterialStateProperty.all(Colors.blueAccent),
+                  //背景颜色
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    //设置按下时的背景颜色
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.blueAccent;
+                    }
+                    //默认背景颜色
+                    return Colors.blue;
+                  }),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                color: Colors.blue,
-                textColor: Colors.white,
                 onPressed: () async {
                   final imageBytes = await _mapController?.takeSnapshot();
                   setState(() {
@@ -60,7 +70,7 @@ class _SnapShotState extends State<_SnapShotBody> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(color: Colors.blueGrey[50]),
-              child: _imageBytes != null ? Image.memory(_imageBytes) : null,
+              child: _imageBytes != null ? Image.memory(_imageBytes!) : null,
             ),
           ),
         ],

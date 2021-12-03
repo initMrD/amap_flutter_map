@@ -19,7 +19,7 @@ class _Body extends StatefulWidget {
 class _BodyState extends State<_Body> {
   static final LatLng markerPosition = const LatLng(39.909187, 116.397451);
   final Map<String, Marker> _initMarkerMap = <String, Marker>{};
-  String _currentMarkerId;
+  String? _currentMarkerId;
   bool _hasInitMarker = false;
   static final String _startIconPath = 'assets/start.png';
   static final String _endIconPath = 'assets/end.png';
@@ -39,22 +39,34 @@ class _BodyState extends State<_Body> {
   }
 
   void _updateMarkerIcon() async {
-    Marker marker = _initMarkerMap[_currentMarkerId];
+    Marker marker = _initMarkerMap[_currentMarkerId]!;
     setState(() {
       _iconPath = _iconPath == _startIconPath ? _endIconPath : _startIconPath;
-      _initMarkerMap[_currentMarkerId] =
+      _initMarkerMap[_currentMarkerId!] =
           marker.copyWith(iconParam: BitmapDescriptor.fromIconPath(_iconPath));
     });
   }
 
-  FlatButton _createMyFloatButton(String label, Function onPressed) {
-    return FlatButton(
+  TextButton _createMyFloatButton(String label, VoidCallback onPressed) {
+    return TextButton(
       onPressed: onPressed,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      textColor: Colors.white,
-      highlightColor: Colors.blueAccent,
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+        //文字颜色
+        foregroundColor: MaterialStateProperty.all(Colors.white),
+        //水波纹颜色
+        overlayColor: MaterialStateProperty.all(Colors.blueAccent),
+        //背景颜色
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          //设置按下时的背景颜色
+          if (states.contains(MaterialState.pressed)) {
+            return Colors.blueAccent;
+          }
+          //默认背景颜色
+          return Colors.blue;
+        }),
+      ),
       child: Text(label),
-      color: Colors.blue,
     );
   }
 

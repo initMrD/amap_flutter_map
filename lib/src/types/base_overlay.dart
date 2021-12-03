@@ -1,7 +1,7 @@
 /// 地图覆盖物基类
 class BaseOverlay {
   /// overlay id
-  String _id;
+  late String _id;
 
   String get id => _id;
 
@@ -22,10 +22,7 @@ class BaseOverlay {
   }
 }
 
-List<Map<String, dynamic>> serializeOverlaySet(Set<BaseOverlay> overlays) {
-  if (overlays == null) {
-    return null;
-  }
+List<Map<String, dynamic>>? serializeOverlaySet(Set<BaseOverlay> overlays) {
   return overlays
       .map<Map<String, dynamic>>((BaseOverlay overlay) => overlay.toMap())
       .toList();

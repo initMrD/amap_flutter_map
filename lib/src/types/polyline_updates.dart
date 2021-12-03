@@ -13,10 +13,12 @@ import 'types.dart';
 class PolylineUpdates {
   /// 通过polyline的前后更新集合构造一个polylineUpdates
   PolylineUpdates.from(Set<Polyline> previous, Set<Polyline> current) {
+    // ignore: unnecessary_null_comparison
     if (previous == null) {
       previous = Set<Polyline>.identity();
     }
 
+    // ignore: unnecessary_null_comparison
     if (current == null) {
       current = Set<Polyline>.identity();
     }
@@ -28,7 +30,7 @@ class PolylineUpdates {
     final Set<String> currentPolylineIds = currentPolylines.keys.toSet();
 
     Polyline idToCurrentPolyline(String id) {
-      return currentPolylines[id];
+      return currentPolylines[id]!;
     }
 
     final Set<String> _polylineIdsToRemove =
@@ -40,7 +42,7 @@ class PolylineUpdates {
         .toSet();
 
     bool hasChanged(Polyline current) {
-      final Polyline previous = previousPolylines[current.id];
+      final Polyline previous = previousPolylines[current.id]!;
       return current != previous;
     }
 
@@ -56,13 +58,13 @@ class PolylineUpdates {
   }
 
   /// 用于添加polyline的集合
-  Set<Polyline> polylinesToAdd;
+  Set<Polyline>? polylinesToAdd;
 
   /// 需要删除的plyline的id集合
-  Set<String> polylineIdsToRemove;
+  Set<String>? polylineIdsToRemove;
 
   /// 用于更新polyline的集合
-  Set<Polyline> polylinesToChange;
+  Set<Polyline>? polylinesToChange;
 
   /// 将对象装换为可序列化的对象
   Map<String, dynamic> toMap() {
@@ -74,9 +76,9 @@ class PolylineUpdates {
       }
     }
 
-    addIfNonNull('polylinesToAdd', serializeOverlaySet(polylinesToAdd));
-    addIfNonNull('polylinesToChange', serializeOverlaySet(polylinesToChange));
-    addIfNonNull('polylineIdsToRemove', polylineIdsToRemove.toList());
+    addIfNonNull('polylinesToAdd', serializeOverlaySet(polylinesToAdd!));
+    addIfNonNull('polylinesToChange', serializeOverlaySet(polylinesToChange!));
+    addIfNonNull('polylineIdsToRemove', polylineIdsToRemove?.toList());
 
     return updateMap;
   }
@@ -85,6 +87,7 @@ class PolylineUpdates {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if (other is !PolylineUpdates) return false;
     final PolylineUpdates typedOther = other;
     return setEquals(polylinesToAdd, typedOther.polylinesToAdd) &&
         setEquals(polylineIdsToRemove, typedOther.polylineIdsToRemove) &&

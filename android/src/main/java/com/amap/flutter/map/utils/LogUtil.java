@@ -10,28 +10,28 @@ import android.util.Log;
  * @since
  */
 public class LogUtil {
-    private static final boolean DEBUG = false;
+    public static boolean isDebugMode = false;
     private static final String TAG = "AMapFlutter_";
     public static void i(String className, String message) {
-        if(DEBUG) {
+        if(isDebugMode) {
             Log.i(TAG+className, message);
         }
     }
     public static void d(String className, String message) {
-        if(DEBUG) {
+        if(isDebugMode) {
             Log.d(TAG+className, message);
         }
     }
 
     public static void w(String className, String message) {
-        if(DEBUG) {
+        if(isDebugMode) {
             Log.w(TAG+className, message);
         }
     }
 
 
     public static void e(String className, String methodName, Throwable e) {
-        if (DEBUG) {
+        if (isDebugMode) {
             Log.e(TAG+className, methodName + " exception!!", e);
         }
     }

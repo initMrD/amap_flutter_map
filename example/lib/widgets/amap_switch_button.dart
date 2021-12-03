@@ -4,14 +4,14 @@ typedef void OnChanged(bool value);
 
 class AMapSwitchButton extends StatefulWidget {
   const AMapSwitchButton({
-    Key key,
+    Key? key,
     this.label,
     this.onSwitchChanged,
     this.defaultValue = true,
   }) : super(key: key);
 
-  final Text label;
-  final Function onSwitchChanged;
+  final Text? label;
+  final Function? onSwitchChanged;
   final bool defaultValue;
 
   @override
@@ -19,7 +19,7 @@ class AMapSwitchButton extends StatefulWidget {
 }
 
 class _SwitchButtonState extends State<AMapSwitchButton> {
-  bool _localValue;
+  late bool _localValue;
   @override
   void initState() {
     super.initState();
@@ -36,7 +36,7 @@ class _SwitchButtonState extends State<AMapSwitchButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              widget.label,
+              widget.label!,
               Switch(
                 value: _localValue,
                 onChanged: (null != widget.onSwitchChanged)
@@ -44,7 +44,7 @@ class _SwitchButtonState extends State<AMapSwitchButton> {
                         setState(() {
                           _localValue = value;
                         });
-                        widget.onSwitchChanged(value);
+                        widget.onSwitchChanged!(value);
                       }
                     : null,
               ),

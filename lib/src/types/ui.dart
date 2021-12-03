@@ -31,7 +31,7 @@ class CameraTargetBounds {
   /// 摄像机的边界.
   ///
   /// null代表不指定边界
-  final LatLngBounds bounds;
+  final LatLngBounds? bounds;
 
   /// 取消指定边界
   static const CameraTargetBounds unbounded = CameraTargetBounds(null);
@@ -63,14 +63,14 @@ class MinMaxZoomPreference {
   /// 缩放级别范围为[3, 20]，超出范围取边界值
   ///
   const MinMaxZoomPreference(double minZoom, double maxZoom)
-      : this.minZoom = ((minZoom ?? 3) > (maxZoom ?? 20) ? maxZoom : minZoom),
-        this.maxZoom = ((minZoom ?? 3) > (maxZoom ?? 20) ? minZoom : maxZoom);
+      : this.minZoom = ((minZoom < 3 ? 3 : minZoom) > (maxZoom > 20 ? 20 : maxZoom) ? maxZoom : minZoom),
+        this.maxZoom = ((minZoom < 3 ? 3 : minZoom) > (maxZoom > 20 ? 20 : maxZoom) ? minZoom : maxZoom);
 
   /// 最小zoomLevel
-  final double minZoom;
+  final double? minZoom;
 
   /// 最大zoomLevel
-  final double maxZoom;
+  final double? maxZoom;
 
   /// 高德地图默认zoomLevel的范围.
   static const MinMaxZoomPreference defaultPreference =
@@ -102,16 +102,16 @@ class MyLocationStyleOptions {
   bool enabled;
 
   ///精度圈填充色
-  Color circleFillColor;
+  Color? circleFillColor;
 
   ///精度圈边框色
-  Color circleStrokeColor;
+  Color? circleStrokeColor;
 
   ///精度圈边框宽度
-  double circleStrokeWidth;
+  double? circleStrokeWidth;
 
   ///小蓝点图标
-  BitmapDescriptor icon;
+  BitmapDescriptor? icon;
 
   MyLocationStyleOptions(
     this.enabled, {
@@ -131,7 +131,7 @@ class MyLocationStyleOptions {
     );
   }
 
-  static MyLocationStyleOptions fromMap(dynamic json) {
+  static MyLocationStyleOptions? fromMap(dynamic json) {
     if (null == json) {
       return null;
     }
@@ -165,6 +165,7 @@ class MyLocationStyleOptions {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (runtimeType != other.runtimeType) return false;
+    if (other is !MyLocationStyleOptions) return false;
     final MyLocationStyleOptions typedOther = other;
     return enabled == typedOther.enabled &&
         circleFillColor == typedOther.circleFillColor &&
@@ -192,10 +193,10 @@ class CustomStyleOptions {
   bool enabled;
 
   ///自定义样式的二进制数据，对应下载的自定义地图文件中的style.data中的二进制数据
-  Uint8List styleData;
+  Uint8List? styleData;
 
   ///自定义扩展样式的二进制数据,对应下载的自定义地图文件中的style_extra.data中的二进制数据
-  Uint8List styleExtraData;
+  Uint8List? styleExtraData;
 
   CustomStyleOptions(
     this.enabled, {
@@ -203,7 +204,7 @@ class CustomStyleOptions {
     this.styleExtraData,
   });
 
-  static CustomStyleOptions fromMap(dynamic json) {
+  static CustomStyleOptions? fromMap(dynamic json) {
     if (json == null) {
       return null;
     }
@@ -232,6 +233,7 @@ class CustomStyleOptions {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (runtimeType != other.runtimeType) return false;
+    if (other is !CustomStyleOptions) return false;
     final CustomStyleOptions typedOther = other;
     return enabled == typedOther.enabled &&
         styleData == typedOther.styleData &&

@@ -18,7 +18,7 @@ class _ShowMapPageBody extends StatefulWidget {
 }
 
 class _ShowMapPageState extends State<_ShowMapPageBody> {
-  List<Widget> _approvalNumberWidget = List<Widget>();
+  List<Widget> _approvalNumberWidget = <Widget>[];
   @override
   Widget build(BuildContext context) {
     final AMapWidget map = AMapWidget(
@@ -50,7 +50,7 @@ class _ShowMapPageState extends State<_ShowMapPageBody> {
     );
   }
 
-  AMapController _mapController;
+  late AMapController _mapController;
   void onMapCreated(AMapController controller) {
     setState(() {
       _mapController = controller;
@@ -62,17 +62,13 @@ class _ShowMapPageState extends State<_ShowMapPageBody> {
   void getApprovalNumber() async {
     //普通地图审图号
     String mapContentApprovalNumber =
-        await _mapController?.getMapContentApprovalNumber();
+      (await _mapController.getMapContentApprovalNumber())!;
     //卫星地图审图号
     String satelliteImageApprovalNumber =
-        await _mapController?.getSatelliteImageApprovalNumber();
+      (await _mapController.getSatelliteImageApprovalNumber())!;
     setState(() {
-      if (null != mapContentApprovalNumber) {
         _approvalNumberWidget.add(Text(mapContentApprovalNumber));
-      }
-      if (null != satelliteImageApprovalNumber) {
         _approvalNumberWidget.add(Text(satelliteImageApprovalNumber));
-      }
     });
     print('地图审图号（普通地图）: $mapContentApprovalNumber');
     print('地图审图号（卫星地图): $satelliteImageApprovalNumber');

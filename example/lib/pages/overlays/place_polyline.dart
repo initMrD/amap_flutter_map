@@ -33,7 +33,7 @@ class _State extends State<_Body> {
     Colors.pink,
   ];
   Map<String, Polyline> _polylines = <String, Polyline>{};
-  String selectedPolylineId;
+  String? selectedPolylineId;
 
   void _onMapCreated(AMapController controller) {}
 
@@ -61,7 +61,7 @@ class _State extends State<_Body> {
   }
 
   void _remove() {
-    final Polyline selectedPolyline = _polylines[selectedPolylineId];
+    final Polyline? selectedPolyline = _polylines[selectedPolylineId];
     //有选中的Marker
     if (selectedPolyline != null) {
       setState(() {
@@ -73,18 +73,18 @@ class _State extends State<_Body> {
   }
 
   void _changeWidth() {
-    final Polyline selectedPolyline = _polylines[selectedPolylineId];
-    double currentWidth = selectedPolyline.width;
-    if (currentWidth < 50) {
-      currentWidth += 10;
-    } else {
-      currentWidth = 5;
-    }
-    //有选中的Marker
+    final Polyline? selectedPolyline = _polylines[selectedPolylineId]!;
+    //有选中的Polyline
     if (selectedPolyline != null) {
+      double currentWidth = selectedPolyline.width;
+      if (currentWidth < 50) {
+        currentWidth += 10;
+      } else {
+        currentWidth = 5;
+      }
+
       setState(() {
-        _polylines[selectedPolylineId] =
-            selectedPolyline.copyWith(widthParam: currentWidth);
+        _polylines[selectedPolylineId!] = selectedPolyline.copyWith(widthParam: currentWidth);
       });
     } else {
       print('无选中的Polyline，无法修改宽度');
@@ -99,7 +99,7 @@ class _State extends State<_Body> {
   }
 
   Future<void> _changeDashLineType() async {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline? polyline = _polylines[selectedPolylineId];
     if (polyline == null) {
       return;
     }
@@ -111,13 +111,13 @@ class _State extends State<_Body> {
     }
 
     setState(() {
-      _polylines[selectedPolylineId] =
+      _polylines[selectedPolylineId!] =
           polyline.copyWith(dashLineTypeParam: currentType);
     });
   }
 
   void _changeCapType() {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline? polyline = _polylines[selectedPolylineId]!;
     if (polyline == null) {
       return;
     }
@@ -128,15 +128,12 @@ class _State extends State<_Body> {
       capType = CapType.butt;
     }
     setState(() {
-      _polylines[selectedPolylineId] = polyline.copyWith(capTypeParam: capType);
+      _polylines[selectedPolylineId!] = polyline.copyWith(capTypeParam: capType);
     });
   }
 
   void _changeJointType() {
-    final Polyline polyline = _polylines[selectedPolylineId];
-    if (polyline == null) {
-      return;
-    }
+    final Polyline polyline = _polylines[selectedPolylineId]!;
     JoinType joinType = polyline.joinType;
     if (joinType.index < JoinType.round.index) {
       joinType = JoinType.values[joinType.index + 1];
@@ -144,48 +141,48 @@ class _State extends State<_Body> {
       joinType = JoinType.bevel;
     }
     setState(() {
-      _polylines[selectedPolylineId] =
+      _polylines[selectedPolylineId!] =
           polyline.copyWith(joinTypeParam: joinType);
     });
   }
 
   Future<void> _changeAlpha() async {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline polyline = _polylines[selectedPolylineId]!;
     final double current = polyline.alpha;
     setState(() {
-      _polylines[selectedPolylineId] = polyline.copyWith(
+      _polylines[selectedPolylineId!] = polyline.copyWith(
         alphaParam: current < 0.1 ? 1.0 : current * 0.75,
       );
     });
   }
 
   Future<void> _toggleVisible(value) async {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline polyline = _polylines[selectedPolylineId]!;
     setState(() {
-      _polylines[selectedPolylineId] = polyline.copyWith(
+      _polylines[selectedPolylineId!] = polyline.copyWith(
         visibleParam: value,
       );
     });
   }
 
   void _changeColor() {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline polyline = _polylines[selectedPolylineId]!;
     setState(() {
-      _polylines[selectedPolylineId] = polyline.copyWith(
+      _polylines[selectedPolylineId!] = polyline.copyWith(
         colorParam: colors[++colorsIndex % colors.length],
       );
     });
   }
 
   void _changePoints() {
-    final Polyline polyline = _polylines[selectedPolylineId];
+    final Polyline polyline = _polylines[selectedPolylineId]!;
     List<LatLng> currentPoints = polyline.points;
     List<LatLng> newPoints = <LatLng>[];
     newPoints.addAll(currentPoints);
     newPoints.add(LatLng(39.835347, 116.34575));
 
     setState(() {
-      _polylines[selectedPolylineId] = polyline.copyWith(
+      _polylines[selectedPolylineId!] = polyline.copyWith(
         pointsParam: newPoints,
       );
     });
@@ -228,22 +225,22 @@ class _State extends State<_Body> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('添加'),
                             onPressed: _add,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('删除'),
                             onPressed:
                                 (selectedPolylineId == null) ? null : _remove,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改线宽'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
                                 : _changeWidth,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改透明度'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
@@ -260,31 +257,31 @@ class _State extends State<_Body> {
                       ),
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改颜色'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
                                 : _changeColor,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改线头样式'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
                                 : _changeCapType,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改连接样式'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
                                 : _changeJointType,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改虚线类型'),
                             onPressed: (selectedPolylineId == null)
                                 ? null
                                 : _changeDashLineType,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改坐标'),
                             onPressed: (selectedPolylineId == null)
                                 ? null

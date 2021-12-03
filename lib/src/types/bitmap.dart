@@ -4,6 +4,7 @@
 
 import 'dart:async' show Future;
 import 'dart:typed_data' show Uint8List;
+import 'dart:ui';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart' show AMapUtil;
 import 'package:flutter/material.dart'
@@ -48,7 +49,7 @@ class BitmapDescriptor {
 
   /// 创建默认的marker 图标的 bitmap 描述信息对象.
   static const BitmapDescriptor defaultMarker =
-  BitmapDescriptor._(<dynamic>['defaultMarker']);
+      BitmapDescriptor._(<dynamic>['defaultMarker']);
 
   /// 创建引用默认着色的BitmapDescriptor
   static BitmapDescriptor defaultMarkerWithHue(double hue) {
@@ -98,12 +99,12 @@ class BitmapDescriptor {
   ///并根据dpi将图像缩放到正确的分辨率。
   ///将`mipmaps1设置为false可加载图像的精确dpi版本，默认情况下，`mipmap`为true。
   static Future<BitmapDescriptor> fromAssetImage(
-      ImageConfiguration configuration,
-      String assetName, {
-        AssetBundle bundle,
-        String package,
-        bool mipmaps = true,
-      }) async {
+    ImageConfiguration configuration,
+    String assetName, {
+    AssetBundle? bundle,
+    String? package,
+    bool mipmaps = true,
+  }) async {
     if (!mipmaps && configuration.devicePixelRatio != null) {
       return BitmapDescriptor._(<dynamic>[
         'fromAssetImage',
@@ -112,17 +113,18 @@ class BitmapDescriptor {
       ]);
     }
     final AssetImage assetImage =
-    AssetImage(assetName, package: package, bundle: bundle);
+        AssetImage(assetName, package: package, bundle: bundle);
     final AssetBundleImageKey assetBundleImageKey =
-    await assetImage.obtainKey(configuration);
+        await assetImage.obtainKey(configuration);
+    final Size? size = configuration.size;
     return BitmapDescriptor._(<dynamic>[
       'fromAssetImage',
       assetBundleImageKey.name,
       assetBundleImageKey.scale,
-      if (kIsWeb && configuration?.size != null)
+      if (kIsWeb && size != null)
         [
-          configuration.size.width,
-          configuration.size.height,
+          size.width,
+          size.height,
         ],
     ]);
   }

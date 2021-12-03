@@ -16,11 +16,11 @@ A new Flutter plugin.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'AMapNavi', '~> 7.7.0'
-  s.dependency 'AMapSearch', '~> 7.7.0'
+  s.dependency 'AMap3DMap'
   s.static_framework = true
   s.platform = :ios, '8.0'
-  s.resources = ['Assets/*.png'];
+
+  s.static_framework = true
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end

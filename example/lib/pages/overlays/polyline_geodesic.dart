@@ -33,8 +33,8 @@ class _State extends State<_Body> {
     Colors.pink,
   ];
   Map<String, Polyline> _polylines = <String, Polyline>{};
-  String selectedPolylineId;
-  AMapController _controller;
+  late String selectedPolylineId;
+  AMapController? _controller;
 
   void _onMapCreated(AMapController controller) {
     _controller = controller;
@@ -96,14 +96,25 @@ class _State extends State<_Body> {
           ),
           Expanded(
               flex: 1,
-              child: FlatButton(
+              child: TextButton(
                 onPressed: _add,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                textColor: Colors.white,
-                highlightColor: Colors.blueAccent,
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                  //文字颜色
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  //水波纹颜色
+                  overlayColor: MaterialStateProperty.all(Colors.blueAccent),
+                  //背景颜色
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    //设置按下时的背景颜色
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.blueAccent;
+                    }
+                    //默认背景颜色
+                    return Colors.blue;
+                  }),
+                ),
                 child: Text('添加大地曲线'),
-                color: Colors.blue,
               )),
         ],
       ),

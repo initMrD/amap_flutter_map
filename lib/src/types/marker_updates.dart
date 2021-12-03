@@ -9,10 +9,12 @@ import 'marker.dart';
 class MarkerUpdates {
   /// 根据之前的marker列表[previous]和当前的marker列表[current]创建[MakerUpdates].
   MarkerUpdates.from(Set<Marker> previous, Set<Marker> current) {
+    // ignore: unnecessary_null_comparison
     if (previous == null) {
       previous = Set<Marker>.identity();
     }
 
+    // ignore: unnecessary_null_comparison
     if (current == null) {
       current = Set<Marker>.identity();
     }
@@ -24,7 +26,7 @@ class MarkerUpdates {
     final Set<String> currentMarkerIds = currentMarkers.keys.toSet();
 
     Marker idToCurrentMarker(String id) {
-      return currentMarkers[id];
+      return currentMarkers[id]!;
     }
 
     final Set<String> _markerIdsToRemove =
@@ -36,7 +38,7 @@ class MarkerUpdates {
         .toSet();
 
     bool hasChanged(Marker current) {
-      final Marker previous = previousMarkers[current.id];
+      final Marker? previous = previousMarkers[current.id];
       return current != previous;
     }
 
@@ -52,13 +54,13 @@ class MarkerUpdates {
   }
 
   /// 想要添加的marker集合.
-  Set<Marker> markersToAdd;
+  Set<Marker>? markersToAdd;
 
   /// 想要删除的marker的id集合
-  Set<String> markerIdsToRemove;
+  Set<String>? markerIdsToRemove;
 
   /// 想要更新的marker集合.
-  Set<Marker> markersToChange;
+  Set<Marker>? markersToChange;
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> updateMap = <String, dynamic>{};
@@ -69,9 +71,9 @@ class MarkerUpdates {
       }
     }
 
-    addIfNonNull('markersToAdd', serializeOverlaySet(markersToAdd));
-    addIfNonNull('markersToChange', serializeOverlaySet(markersToChange));
-    addIfNonNull('markerIdsToRemove', markerIdsToRemove.toList());
+    addIfNonNull('markersToAdd', serializeOverlaySet(markersToAdd!));
+    addIfNonNull('markersToChange', serializeOverlaySet(markersToChange!));
+    addIfNonNull('markerIdsToRemove', markerIdsToRemove?.toList());
 
     return updateMap;
   }
@@ -80,6 +82,7 @@ class MarkerUpdates {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if(other is !MarkerUpdates) return false;
     final MarkerUpdates typedOther = other;
     return setEquals(markersToAdd, typedOther.markersToAdd) &&
         setEquals(markerIdsToRemove, typedOther.markerIdsToRemove) &&

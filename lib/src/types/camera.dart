@@ -8,13 +8,10 @@ class CameraPosition {
   /// 如果[bearing], [target], [tilt], 或者 [zoom] 为null时会返回[AssertionError]
   const CameraPosition({
     this.bearing = 0.0,
-    @required this.target,
+    required this.target,
     this.tilt = 0.0,
     this.zoom = 10,
-  })  : assert(bearing != null),
-        assert(target != null),
-        assert(tilt != null),
-        assert(zoom != null);
+  });
 
   /// 可视区域指向的方向，以角度为单位，从正北向逆时针方向计算，从0 度到360 度。
   final double bearing;
@@ -41,13 +38,17 @@ class CameraPosition {
   /// 从Map转换成[CameraPosition]
   ///
   /// 主要在插件内部使用
-  static CameraPosition fromMap(dynamic json) {
-    if (json == null) {
+  static CameraPosition? fromMap(dynamic json) {
+    if (json == null || !(json is Map<dynamic, dynamic>)) {
+      return null;
+    }
+    final LatLng? target = LatLng.fromJson(json['target']);
+    if (target == null) {
       return null;
     }
     return CameraPosition(
       bearing: json['bearing'],
-      target: LatLng.fromJson(json['target']),
+      target: target,
       tilt: json['tilt'],
       zoom: json['zoom'],
     );

@@ -1,13 +1,3 @@
-/*
- * @Description: 
- * @Author: dmlzj
- * @Github: https://github.com/dmlzj
- * @Email: 284832506@qq.com
- * @Date: 2020-12-22 15:49:01
- * @LastEditors: dmlzj
- * @LastEditTime: 2021-01-21 15:21:28
- * @如果有bug，那肯定不是我的锅，嘤嘤嘤
- */
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 

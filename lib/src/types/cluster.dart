@@ -21,12 +21,12 @@ class Cluster extends BaseOverlay {
   final LatLng position;
   final dynamic data;
 
-  Cluster({@required this.position, this.data});
+  Cluster({required this.position, this.data});
 
   /// copy的真正复制的参数，主要用于需要修改某个属性参数时使用
   Cluster copyWith({
   
-    LatLng positionParam,
+    LatLng? positionParam,
     dynamic dataParam,
    
   }) {
@@ -44,7 +44,7 @@ class Cluster extends BaseOverlay {
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> json = <String, dynamic>{};
     json['id'] = id;
-    json['position'] = position?.toJson();
+    json['position'] = position.toJson();
     json['data'] = data;
     return json;
   }

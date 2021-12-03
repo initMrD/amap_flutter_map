@@ -11,10 +11,12 @@ import 'types.dart';
 class PolygonUpdates {
   /// 通过Polygon的前后更新集合构造一个PolygonUpdates
   PolygonUpdates.from(Set<Polygon> previous, Set<Polygon> current) {
+    // ignore: unnecessary_null_comparison
     if (previous == null) {
       previous = Set<Polygon>.identity();
     }
 
+    // ignore: unnecessary_null_comparison
     if (current == null) {
       current = Set<Polygon>.identity();
     }
@@ -26,7 +28,7 @@ class PolygonUpdates {
     final Set<String> currentPolygonIds = currentPolygons.keys.toSet();
 
     Polygon idToCurrentPolygon(String id) {
-      return currentPolygons[id];
+      return currentPolygons[id]!;
     }
 
     final Set<String> _polygonIdsToRemove =
@@ -38,7 +40,7 @@ class PolygonUpdates {
         .toSet();
 
     bool hasChanged(Polygon current) {
-      final Polygon previous = previousPolygons[current.id];
+      final Polygon previous = previousPolygons[current.id]!;
       return current != previous;
     }
 
@@ -54,13 +56,13 @@ class PolygonUpdates {
   }
 
   /// 想要添加的polygon对象集合.
-  Set<Polygon> polygonsToAdd;
+  Set<Polygon>? polygonsToAdd;
 
   /// 想要删除的polygon的id集合
-  Set<String> polygonIdsToRemove;
+  Set<String>? polygonIdsToRemove;
 
   /// 想要更新的polygon对象集合
-  Set<Polygon> polygonsToChange;
+  Set<Polygon>? polygonsToChange;
 
   /// 转换成可以序列化的map
   Map<String, dynamic> toMap() {
@@ -72,9 +74,9 @@ class PolygonUpdates {
       }
     }
 
-    addIfNonNull('polygonsToAdd', serializeOverlaySet(polygonsToAdd));
-    addIfNonNull('polygonsToChange', serializeOverlaySet(polygonsToChange));
-    addIfNonNull('polygonIdsToRemove', polygonIdsToRemove.toList());
+    addIfNonNull('polygonsToAdd', serializeOverlaySet(polygonsToAdd!));
+    addIfNonNull('polygonsToChange', serializeOverlaySet(polygonsToChange!));
+    addIfNonNull('polygonIdsToRemove', polygonIdsToRemove?.toList());
 
     return updateMap;
   }
@@ -83,6 +85,7 @@ class PolygonUpdates {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
+    if (other is !PolygonUpdates) return false;
     final PolygonUpdates typedOther = other;
     return setEquals(polygonsToAdd, typedOther.polygonsToAdd) &&
         setEquals(polygonIdsToRemove, typedOther.polygonIdsToRemove) &&

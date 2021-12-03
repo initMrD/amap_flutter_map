@@ -12,7 +12,7 @@ class ChangeMapTypePage extends BasePage {
 }
 
 class _PageBody extends StatefulWidget {
-  _PageBody({Key key}) : super(key: key);
+  _PageBody({Key? key}) : super(key: key);
 
   @override
   _PageBodyState createState() => _PageBodyState();
@@ -20,7 +20,7 @@ class _PageBody extends StatefulWidget {
 
 class _PageBodyState extends State<_PageBody> {
   //地图类型
-  MapType _mapType;
+  late MapType _mapType;
   final Map<String, MapType> _radioValueMap = {
     '普通地图': MapType.normal,
     '卫星地图': MapType.satellite,
@@ -40,7 +40,7 @@ class _PageBodyState extends State<_PageBody> {
     final AMapWidget map = AMapWidget(
       apiKey: ConstConfig.amapApiKeys,
       //地图类型属性
-      mapType: _mapType ?? MapType.normal,
+      mapType: _mapType,
     );
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -64,7 +64,7 @@ class _PageBodyState extends State<_PageBody> {
                   onChanged: (value) => {
                     //改变当前地图样式为选中的样式
                     setState(() {
-                      _mapType = value;
+                      _mapType = value as MapType;
                     })
                   },
                 ),

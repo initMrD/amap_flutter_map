@@ -34,7 +34,7 @@ class _State extends State<_Body> {
   ];
 
   Map<String, Polygon> _polygons = <String, Polygon>{};
-  String selectedPolygonId;
+  String? selectedPolygonId;
 
   void _onMapCreated(AMapController controller) {}
 
@@ -69,29 +69,27 @@ class _State extends State<_Body> {
   }
 
   void _remove() {
-    final Polygon selectedPolygon = _polygons[selectedPolygonId];
-    //有选中的Marker
-    if (selectedPolygon != null) {
+    if(selectedPolygonId != null) {
+      //有选中的Marker
       setState(() {
         _polygons.remove(selectedPolygonId);
       });
-    } else {
-      print('无选中的Polygon，无法删除');
     }
+
   }
 
   void _changeStrokeWidth() {
-    final Polygon selectedPolygon = _polygons[selectedPolygonId];
-    double currentWidth = selectedPolygon.strokeWidth;
-    if (currentWidth < 50) {
-      currentWidth += 10;
-    } else {
-      currentWidth = 5;
-    }
-    //有选中的Marker
-    if (selectedPolygon != null) {
+    final Polygon? selectedPolygon = _polygons[selectedPolygonId];
+    if(selectedPolygon != null) {
+      double currentWidth = selectedPolygon.strokeWidth;
+      if (currentWidth < 50) {
+        currentWidth += 10;
+      } else {
+        currentWidth = 5;
+      }
+      //有选中的Polygon
       setState(() {
-        _polygons[selectedPolygonId] =
+        _polygons[selectedPolygonId!] =
             selectedPolygon.copyWith(strokeWidthParam: currentWidth);
       });
     } else {
@@ -100,9 +98,9 @@ class _State extends State<_Body> {
   }
 
   void _changeColors() {
-    final Polygon polygon = _polygons[selectedPolygonId];
+    final Polygon polygon = _polygons[selectedPolygonId]!;
     setState(() {
-      _polygons[selectedPolygonId] = polygon.copyWith(
+      _polygons[selectedPolygonId!] = polygon.copyWith(
         strokeColorParam: colors[++colorsIndex % colors.length],
         fillColorParam: colors[(colorsIndex + 1) % colors.length],
       );
@@ -110,23 +108,23 @@ class _State extends State<_Body> {
   }
 
   Future<void> _toggleVisible(value) async {
-    final Polygon polygon = _polygons[selectedPolygonId];
+    final Polygon polygon = _polygons[selectedPolygonId]!;
     setState(() {
-      _polygons[selectedPolygonId] = polygon.copyWith(
+      _polygons[selectedPolygonId!] = polygon.copyWith(
         visibleParam: value,
       );
     });
   }
 
   void _changePoints() {
-    final Polygon polygon = _polygons[selectedPolygonId];
+    final Polygon polygon = _polygons[selectedPolygonId]!;
     List<LatLng> currentPoints = polygon.points;
     List<LatLng> newPoints = <LatLng>[];
     newPoints.addAll(currentPoints);
     newPoints.add(LatLng(39.828809, 116.360364));
 
     setState(() {
-      _polygons[selectedPolygonId] = polygon.copyWith(
+      _polygons[selectedPolygonId!] = polygon.copyWith(
         pointsParam: newPoints,
       );
     });
@@ -171,16 +169,16 @@ class _State extends State<_Body> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('添加'),
                             onPressed: _add,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('删除'),
                             onPressed:
                                 (selectedPolygonId == null) ? null : _remove,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改边框宽度'),
                             onPressed: (selectedPolygonId == null)
                                 ? null
@@ -190,7 +188,7 @@ class _State extends State<_Body> {
                       ),
                       Column(
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改边框和填充色'),
                             onPressed: (selectedPolygonId == null)
                                 ? null
@@ -203,7 +201,7 @@ class _State extends State<_Body> {
                                 : _toggleVisible,
                             defaultValue: true,
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('修改坐标'),
                             onPressed: (selectedPolygonId == null)
                                 ? null

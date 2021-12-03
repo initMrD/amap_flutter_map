@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class DemoGroupWidget extends StatefulWidget {
   final String groupLabel;
-  final List<BasePage> itemPages;
+  final List<BasePage>? itemPages;
 
-  DemoGroupWidget({Key key, @required this.groupLabel, this.itemPages})
+  DemoGroupWidget({Key? key, required this.groupLabel, this.itemPages})
       : super(key: key);
   @override
   State<StatefulWidget> createState() => _GroupState();
@@ -24,7 +24,7 @@ class _GroupState extends State<DemoGroupWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.itemPages != null && widget.itemPages.length > 0) {
+    if (widget.itemPages != null && widget.itemPages!.length > 0) {
       _hasItemPages = true;
     } else {
       _hasItemPages = false;
@@ -49,11 +49,11 @@ class _GroupState extends State<DemoGroupWidget> {
               ? ListView.separated(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: widget.itemPages.length,
+                  itemCount: widget.itemPages!.length,
                   itemBuilder: (_, int index) => ListTile(
-                    title: Text(widget.itemPages[index].title),
-                    subtitle: Text(widget.itemPages[index].subTitle),
-                    onTap: () => _pushPage(context, widget.itemPages[index]),
+                    title: Text(widget.itemPages![index].title),
+                    subtitle: Text(widget.itemPages![index].subTitle),
+                    onTap: () => _pushPage(context, widget.itemPages![index]),
                   ),
                   separatorBuilder: (BuildContext context, int index) =>
                       Divider(

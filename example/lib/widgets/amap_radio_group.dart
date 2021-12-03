@@ -2,12 +2,12 @@ import 'package:amap_flutter_map_example/widgets/amap_gridview.dart';
 import 'package:flutter/material.dart';
 
 class AMapRadioGroup<T> extends StatefulWidget {
-  final String groupLabel;
-  final T groupValue;
-  final Map<String, T> radioValueMap;
-  final ValueChanged<T> onChanged;
+  final String? groupLabel;
+  final T? groupValue;
+  final Map<String, T>? radioValueMap;
+  final ValueChanged<T>? onChanged;
   AMapRadioGroup(
-      {Key key,
+      {Key? key,
       this.groupLabel,
       this.groupValue,
       this.radioValueMap,
@@ -29,22 +29,22 @@ class _AMapRadioGroupState extends State<AMapRadioGroup> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> radioList = List<Widget>();
+    List<Widget> radioList = <Widget>[];
     _groupValue = widget.groupValue ?? null;
     Widget _myRadio(String label, dynamic radioValue) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(label),
-          Radio(
+          Radio<dynamic>(
             value: radioValue,
             groupValue: _groupValue,
-            onChanged: (value) {
+            onChanged: (_value) {
               setState(() {
-                _groupValue = value;
+                _groupValue = _value;
               });
               if (null != widget.onChanged) {
-                widget.onChanged(value);
+                widget.onChanged!(_value);
               }
             },
           ),
@@ -53,23 +53,18 @@ class _AMapRadioGroupState extends State<AMapRadioGroup> {
     }
 
     if (widget.radioValueMap != null) {
-      if (radioList == null) {
-        radioList = List<Widget>();
-      }
-      widget.radioValueMap.forEach((key, value) {
+      widget.radioValueMap!.forEach((key, value) {
         radioList.add(_myRadio(key, value));
       });
     }
     return Container(
       padding: EdgeInsets.all(5),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          widget.groupLabel != null
-              ? Text(widget.groupLabel,
-                  style: TextStyle(fontWeight: FontWeight.w600))
-              : null,
+          Text(widget.groupLabel!),
           Container(
             padding: EdgeInsets.only(left: 10),
             child: AMapGradView(

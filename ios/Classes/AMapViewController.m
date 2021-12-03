@@ -82,9 +82,16 @@
         
         _viewId = viewId;
         
+        if ([dict objectForKey:@"privacyStatement"] != nil) {
+            [self updatePrivacyStateWithDict:[dict objectForKey:@"privacyStatement"]];
+        }
+
+        
         self.mapInitCompleted = NO;
         _mapView = [[MAMapView alloc] initWithFrame:frame];
-        _mapView.frame = CGRectMake(0, 0, 414, 660);
+        if (_mapView == nil && (MAMapVersionNumber) >= 80100) {
+            NSAssert(_mapView,@"MAMapView初始化失败，地图SDK8.1.0及以上，请务必确保调用SDK任何接口前先调用更新隐私合规updatePrivacyShow:privacyInfo、updatePrivacyAgree两个接口");
+        }
         _mapView.delegate = self;
         _mapView.accessibilityElementsHidden = NO;
         [_mapView setCameraPosition:cameraPosition animated:NO duration:0];
@@ -124,7 +131,7 @@
             _arr = clustersToAdd;
             NSLog(@"%@",clustersToAdd);
         }
-        
+
         [self setMethodCallHandler];
     }
     return self;
@@ -137,6 +144,22 @@
 - (void)dealloc {
     if (MAMapRectIsEmpty(_initLimitMapRect) == NO) {//避免没有开始渲染，frame监听还存在时，快速销毁
         [_mapView removeObserver:self forKeyPath:@"frame"];
+    }
+}
+
+- (void)updatePrivacyStateWithDict:(NSDictionary *)dict {
+    if ((MAMapVersionNumber) < 80100) {
+        NSLog(@"当前地图SDK版本没有隐私合规接口，请升级地图SDK到8.1.0及以上版本");
+        return;
+    }
+    if (dict == nil || [dict isKindOfClass:[NSDictionary class]] == NO) {
+        return;
+    }
+    if (dict[@"hasContains"] != nil && dict[@"hasShow"] != nil) {
+        [MAMapView updatePrivacyShow:[dict[@"hasShow"] integerValue] privacyInfo:[dict[@"hasContains"] integerValue]];
+    }
+    if (dict[@"hasAgree"] != nil) {
+        [MAMapView updatePrivacyAgree:[dict[@"hasAgree"] integerValue]];
     }
 }
 
@@ -178,6 +201,7 @@
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
+
 
 - (void)setMethodCallHandler {
     __weak __typeof__(self) weakSelf = self;
@@ -302,7 +326,6 @@
         self.waitForMapCallBack(nil);
         self.waitForMapCallBack = nil;
     }
-
 }
 
 //MARK: Annotation相关回调
@@ -312,21 +335,21 @@
     {
         /* dequeue重用annotationView. */
         static NSString *const AnnotatioViewReuseID = @"AnnotatioViewReuseID";
-        
+
         ClusterAnnotationView *annotationView = (ClusterAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:AnnotatioViewReuseID];
-        
+
         if (!annotationView)
         {
             annotationView = [[ClusterAnnotationView alloc] initWithAnnotation:annotation
                                                                reuseIdentifier:AnnotatioViewReuseID];
         }
-        
+
         /* 设置annotationView的属性. */
         annotationView.annotation = annotation;
         annotationView.count = [(ClusterAnnotation *)annotation count];
         /* 不弹出原生annotation */
         annotationView.canShowCallout = NO;
-        
+
         ClusterAnnotation *an = (ClusterAnnotation *)annotation;
         BOOL haveWarning = false;
         //判断是否存在告警
@@ -335,7 +358,7 @@
             if ([dic.allKeys containsObject:@"warning_num"] && [dic[@"warning_num"] intValue]>0) {
                 haveWarning = true;
             }
-            
+
         }
         annotationView.hasWarning = haveWarning;
         return annotationView;
@@ -343,7 +366,7 @@
     if ([annotation isKindOfClass:[MAPointAnnotation class]] == NO) {
         return nil;
     }
-    
+
     MAPointAnnotation *fAnno = annotation;
     if (fAnno.markerId == nil) {
         return nil;
@@ -411,7 +434,7 @@
             }
             //点击聚合点 回传数据
             if(annotation.pois.count==1|| isSame){
-              
+
                 NSMutableDictionary * dic = [[NSMutableDictionary alloc]init];
                 [dic setObject:poi.address forKey:@"data"];
                 [dic setObject:@{@"latitude":@(poi.location.latitude),@"longitude":@(poi.location.longitude)} forKey:@"position"];
@@ -426,7 +449,7 @@
         }
         [_markerController onMarkerTap:fAnno.markerId];
     }
-  
+
 }
 
 /**
@@ -537,7 +560,7 @@
  * @param animated 是否动画
  */
 - (void)mapView:(MAMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    
+
     AMapCameraPosition *cameraPos = [mapView getCurrentCameraPosition];
     NSDictionary *dict = [cameraPos toDictionary];
     if (dict) {
@@ -545,7 +568,7 @@
     }
     if(_arr.count!=0){
         [_clusterController addClusters:_arr];
-        
+
     }
 
 }

@@ -12,7 +12,7 @@ class GesturesDemoPage extends BasePage {
 }
 
 class _Body extends StatefulWidget {
-  _Body({Key key}) : super(key: key);
+  _Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();

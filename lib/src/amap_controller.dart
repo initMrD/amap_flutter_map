@@ -1,14 +1,13 @@
 part of amap_flutter_map;
 
-final MethodChannelAMapFlutterMap _methodChannel = AMapFlutterPlatform.instance;
+final MethodChannelAMapFlutterMap _methodChannel = AMapFlutterPlatform.instance as MethodChannelAMapFlutterMap;
 
 /// 地图通信中心
 class AMapController {
   final int mapId;
   final _MapState _mapState;
-  AMapController._(CameraPosition initCameraPosition, this._mapState,
-      {@required this.mapId})
-      : assert(_methodChannel != null) {
+
+  AMapController._(CameraPosition initCameraPosition, this._mapState, {required this.mapId}) {
     _connectStreams(mapId);
   }
 
@@ -19,7 +18,6 @@ class AMapController {
     CameraPosition initialCameration,
     _MapState mapState,
   ) async {
-    assert(id != null);
     await _methodChannel.init(id);
     return AMapController._(
       initialCameration,
@@ -37,53 +35,47 @@ class AMapController {
 
   void _connectStreams(int mapId) {
     if (_mapState.widget.onLocationChanged != null) {
-      _methodChannel.onLocationChanged(mapId: mapId).listen(
-          (LocationChangedEvent e) =>
-              _mapState.widget.onLocationChanged(e.value));
+      _methodChannel
+          .onLocationChanged(mapId: mapId)
+          .listen((LocationChangedEvent e) => _mapState.widget.onLocationChanged!(e.value));
     }
 
     if (_mapState.widget.onCameraMove != null) {
-      _methodChannel.onCameraMove(mapId: mapId).listen(
-          (CameraPositionMoveEvent e) =>
-              _mapState.widget.onCameraMove(e.value));
+      _methodChannel
+          .onCameraMove(mapId: mapId)
+          .listen((CameraPositionMoveEvent e) => _mapState.widget.onCameraMove!(e.value));
     }
     if (_mapState.widget.onCameraMoveEnd != null) {
-      _methodChannel.onCameraMoveEnd(mapId: mapId).listen(
-          (CameraPositionMoveEndEvent e) =>
-              _mapState.widget.onCameraMoveEnd(e.value));
+      _methodChannel
+          .onCameraMoveEnd(mapId: mapId)
+          .listen((CameraPositionMoveEndEvent e) => _mapState.widget.onCameraMoveEnd!(e.value));
     }
     if (_mapState.widget.onTap != null) {
-      _methodChannel
-          .onMapTap(mapId: mapId)
-          .listen(((MapTapEvent e) => _mapState.widget.onTap(e.value)));
+      _methodChannel.onMapTap(mapId: mapId).listen(((MapTapEvent e) => _mapState.widget.onTap!(e.value)));
     }
     if (_mapState.widget.onLongPress != null) {
-      _methodChannel.onMapLongPress(mapId: mapId).listen(
-          ((MapLongPressEvent e) => _mapState.widget.onLongPress(e.value)));
+      _methodChannel
+          .onMapLongPress(mapId: mapId)
+          .listen(((MapLongPressEvent e) => _mapState.widget.onLongPress!(e.value)));
     }
-
     if (_mapState.widget.onClusterTap != null) {
-       _methodChannel
-        .onClusterTap(mapId: mapId)
-        .listen((ClusterTapEvent e) => _mapState.widget.onClusterTap(e.value));
+      _methodChannel
+          .onClusterTap(mapId: mapId)
+          .listen((ClusterTapEvent e) => _mapState.widget.onClusterTap!(e.value));
     }
-
     if (_mapState.widget.onPoiTouched != null) {
-      _methodChannel.onPoiTouched(mapId: mapId).listen(
-          ((MapPoiTouchEvent e) => _mapState.widget.onPoiTouched(e.value)));
+      _methodChannel
+          .onPoiTouched(mapId: mapId)
+          .listen(((MapPoiTouchEvent e) => _mapState.widget.onPoiTouched!(e.value)));
     }
 
-    _methodChannel
-        .onMarkerTap(mapId: mapId)
-        .listen((MarkerTapEvent e) => _mapState.onMarkerTap(e.value));
-
-    _methodChannel.onMarkerDragEnd(mapId: mapId).listen(
-        (MarkerDragEndEvent e) =>
-            _mapState.onMarkerDragEnd(e.value, e.position));
+    _methodChannel.onMarkerTap(mapId: mapId).listen((MarkerTapEvent e) => _mapState.onMarkerTap(e.value));
 
     _methodChannel
-        .onPolylineTap(mapId: mapId)
-        .listen((PolylineTapEvent e) => _mapState.onPolylineTap(e.value));
+        .onMarkerDragEnd(mapId: mapId)
+        .listen((MarkerDragEndEvent e) => _mapState.onMarkerDragEnd(e.value, e.position));
+
+    _methodChannel.onPolylineTap(mapId: mapId).listen((PolylineTapEvent e) => _mapState.onPolylineTap(e.value));
   }
 
   void disponse() {
@@ -91,22 +83,18 @@ class AMapController {
   }
 
   Future<void> _updateMapOptions(Map<String, dynamic> optionsUpdate) {
-    assert(optionsUpdate != null);
     return _methodChannel.updateMapOptions(optionsUpdate, mapId: mapId);
   }
 
   Future<void> _updateMarkers(MarkerUpdates markerUpdates) {
-    assert(markerUpdates != null);
     return _methodChannel.updateMarkers(markerUpdates, mapId: mapId);
   }
 
   Future<void> _updatePolylines(PolylineUpdates polylineUpdates) {
-    assert(polylineUpdates != null);
     return _methodChannel.updatePolylines(polylineUpdates, mapId: mapId);
   }
 
   Future<void> _updatePolygons(PolygonUpdates polygonUpdates) {
-    assert(polygonUpdates != null);
     return _methodChannel.updatePolygons(polygonUpdates, mapId: mapId);
   }
 
@@ -119,11 +107,8 @@ class AMapController {
   ///可选属性[animated]用于控制是否执行动画移动
   ///
   ///可选属性[duration]用于控制执行动画的时长,默认250毫秒,单位:毫秒
-  Future<void> moveCamera(CameraUpdate cameraUpdate,
-      {bool animated, int duration = 250}) {
-    assert(cameraUpdate != null);
-    return _methodChannel.moveCamera(cameraUpdate,
-        mapId: mapId, animated: animated, duration: duration);
+  Future<void> moveCamera(CameraUpdate cameraUpdate, {bool animated = true, int duration = 250}) {
+    return _methodChannel.moveCamera(cameraUpdate, mapId: mapId, animated: animated, duration: duration);
   }
 
   ///设置地图每秒渲染的帧数
@@ -132,7 +117,7 @@ class AMapController {
   }
 
   ///地图截屏
-  Future<Uint8List> takeSnapshot() {
+  Future<Uint8List?> takeSnapshot() {
     return _methodChannel.takeSnapshot(mapId: mapId);
   }
 
@@ -141,7 +126,7 @@ class AMapController {
   /// 任何使用高德地图API调用地图服务的应用必须在其应用中对外透出审图号
   ///
   /// 如高德地图在"关于"中体现
-  Future<String> getMapContentApprovalNumber() {
+  Future<String?> getMapContentApprovalNumber() {
     return _methodChannel.getMapContentApprovalNumber(mapId: mapId);
   }
 
@@ -150,7 +135,7 @@ class AMapController {
   /// 任何使用高德地图API调用地图服务的应用必须在其应用中对外透出审图号
   ///
   /// 如高德地图在"关于"中体现
-  Future<String> getSatelliteImageApprovalNumber() {
+  Future<String?> getSatelliteImageApprovalNumber() {
     return _methodChannel.getSatelliteImageApprovalNumber(mapId: mapId);
   }
 

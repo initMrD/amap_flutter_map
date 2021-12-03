@@ -12,14 +12,14 @@ class PoiClickDemoPage extends BasePage {
 }
 
 class _Body extends StatefulWidget {
-  _Body({Key key}) : super(key: key);
+  _Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<_Body> {
-  Widget _poiInfo;
+  Widget? _poiInfo;
   @override
   Widget build(BuildContext context) {
     final AMapWidget amap = AMapWidget(

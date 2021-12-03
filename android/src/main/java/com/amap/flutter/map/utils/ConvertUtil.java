@@ -27,6 +27,7 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Poi;
 import com.amap.flutter.map.core.AMapOptionsSink;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,6 +50,42 @@ public class ConvertUtil {
 
     public static float density;
     private static String apiKey;
+
+    public static void setPrivacyStatement(Context context, Object object) {
+        if (null == object) {
+            return;
+        }
+        Map<?, ?> privacyStatementMap = toMap(object);
+        Object hasContainsObj = privacyStatementMap.get("hasContains");
+        Object hasShowObj = privacyStatementMap.get("hasShow");
+        Object hasAgreeObj = privacyStatementMap.get("hasAgree");
+
+        Class<MapsInitializer> clazz = MapsInitializer.class;
+
+        if (null != hasContainsObj
+                && null != hasShowObj) {
+            boolean hasContains = toBoolean(hasContainsObj);
+            boolean hasShow = toBoolean(hasShowObj);
+            //使用反射的方法调用适配之前的版本
+            try {
+                Method method = clazz.getMethod("updatePrivacyShow", Context.class, boolean.class, boolean.class);
+                method.invoke(null, context, hasContains, hasShow);
+            } catch (Throwable e) {
+//                e.printStackTrace();
+            }
+        }
+
+        if (null != hasAgreeObj) {
+            boolean hasAgree = toBoolean(hasAgreeObj);
+            //使用反射的方法调用适配之前的版本
+            try{
+                Method method = clazz.getMethod("updatePrivacyAgree", Context.class, boolean.class);
+                method.invoke(null, context, hasAgree);
+            } catch (Throwable e) {
+//                e.printStackTrace();
+            }
+        }
+    }
 
     public static void checkApiKey(Object object) {
         if (null == object) {
@@ -88,8 +125,8 @@ public class ConvertUtil {
                 return CameraUpdateFactory.newLatLngZoom(toLatLng(data.get(1)), toFloat(data.get(2)));
             case "scrollBy":
                 return CameraUpdateFactory.scrollBy( //
-                        toFloatPixels(data.get(1)), //
-                        toFloatPixels(data.get(2)));
+                                                     toFloatPixels(data.get(1)), //
+                                                     toFloatPixels(data.get(2)));
             case "zoomBy":
                 if (data.size() == 2) {
                     return CameraUpdateFactory.zoomBy(toFloat(data.get(1)));
