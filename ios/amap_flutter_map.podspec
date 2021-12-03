@@ -17,7 +17,7 @@ A new Flutter plugin.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'AMapNavi', '~> 7.7.0'
-  s.dependency 'AMapSearch'
+  s.dependency 'AMapSearch', '~> 7.7.0'
   s.static_framework = true
   s.platform = :ios, '8.0'
   s.resources = ['Assets/*.png'];
